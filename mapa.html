@@ -1,0 +1,133 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+        <script src='https://api.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.js'></script>
+        <link href='https://api.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.css' rel='stylesheet'/>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og==" crossorigin=""></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+    <title>Mapa</title>
+</head>
+<body>
+    
+        <input id="input" placeholder="Digite um local"> <br>
+        <button>Pesquisar</button>
+     
+        <div id="main"></div>
+        <div id="mapid" style="height: 500px; width: 500px;"></div>
+
+    <script>
+
+        function pegaValor(){
+
+            var city = document.getElementById('input').value;
+            return city;
+        }
+
+
+        function link(){
+
+            var i= "http://api.mapbox.com/geocoding/v5/mapbox.places/";
+            var f= ".json?access_token=pk.eyJ1IjoibGF1cmluZWEiLCJhIjoiY2sxaHI2M3J2MWk3bjNncW93a2ZneTIyMSJ9.IsCqY34SiFRNoGtHLTnEtQ";
+            var url = i + pegaValor() + f;
+            return url;
+        }
+
+
+        function abreLink(){
+
+            var request = new XMLHttpRequest();
+
+            request.open('GET', link(), true); 
+
+            request.onreadystatechange = function(e) {
+                if (this.readyState == 4) {
+                    console.log(JSON.parse(this.response));
+                    var info = JSON.parse(this.response);     
+                   return info;
+                   formaLista();
+            }
+        }
+            request.send();
+        }
+    
+        function formaLista(){
+            var info= abreLink();
+            for(let i = 0; i<5; i++){
+                var Nome = info.features[i].place_name;
+                var c1 = info.features[i].center[1];
+                var c0 =  info.features[i].center[0];
+                criaLISTA(Nome, i, c1, c0);
+            }
+        }
+
+        function criaDIV(){
+
+            var novo_div1 = document.createElement('div');
+            var novo_div2 = document.createElement('div');
+
+            novo_div1.setAttribute("id", "novo_div1");
+            novo_div2.setAttribute('id', 'novo_div2');
+
+            document.getElementById('main').appendChild(novo_div1);
+            document.getElementById('novo_div1').appendChild(novo_div2);
+        }
+
+
+        function criaLISTA(nome_do_item, id, c1, c0){
+
+            var pegaMapa = "mapa("+c1+', '+c0+")";
+            var nova_li = document.createElement('li');
+            nova_li.setAttribute('id', id);
+            
+            var novo_a = document.createElement('a');
+            novo_a.setAttribute('href', '#');
+            novo_a.setAttribute('onclick', pegaMapa);
+
+            var nome = document.createTextNode(nome_do_item);
+
+            nova_li.appendChild(novo_a);
+            novo_a.appendChild(nome);
+
+            document.getElementById('novo_div2').appendChild(nova_li);
+            
+        }
+
+        function mapa(c1, c0){
+
+            document.getElementById('mapid').innerHTML = ' ';
+
+            var divMapa= document.createElement('div');
+            divMapa.setAttribute('id', 'guardaMapa');
+            document.getElementById('mapid').appendChild(divMapa);
+            divMapa.style.height = "600px";
+            divMapa.style.width = "600px";
+
+            var MAPA = L.map('guardaMapa').setView([c1, c0], 14);
+            
+            L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiY2ZsYmVkdWNhdG9yIiwiYSI6ImNrMTZrYm1vNTA1dWEzaGxqN2tmMTZlazcifQ.XXsWkpgiguegb-C7WQpGBA', {
+                maxZoom: 18,
+                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+                    '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+                    'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                id: 'mapbox.streets'
+            }).addTo(MAPA);
+        }
+
+
+        function principal(){
+
+            criaDIV();
+            abreLink();
+        }
+
+    </script>
+</body>
+</html>
+           
