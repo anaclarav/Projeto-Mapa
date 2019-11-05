@@ -146,10 +146,14 @@
             }).addTo(MAPA);
         }
 
+        function divLimpo(){
+
+            document.getElementById('main').innerHTML = ' ';
+        }
 
         function principal(){
 
-  
+            divLimpo();
             criaDIV();
             abreLink();
         }
