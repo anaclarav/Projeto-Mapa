@@ -11,7 +11,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
+    <style type="text/css">
 
+        body{
+            background-color: #b3ffeb;
+        }
+
+        input{
+            margin-left: 670px;
+            margin-top: 30px;
+            width: 250px;
+            height: 35px;
+            padding-left: 10px;
+            font-size: 16px;
+
+        }
+
+        button{
+            margin-left: 747px;
+            width: 116px;
+            height: 36px;
+            margin-bottom: 25px;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        div{
+            margin: auto;
+            width: 67%;
+        }
+
+
+    </style>
     <title>Mapa</title>
 </head>
 <body>
@@ -50,23 +81,18 @@
                 if (this.readyState == 4) {
                     console.log(JSON.parse(this.response));
                     var info = JSON.parse(this.response);     
-                   return info;
-                   formaLista();
+                   
+                    for(let i = 0; i<5; i++){
+                        var Nome = info.features[i].place_name;
+                        var c1 = info.features[i].center[1];
+                        var c0 =  info.features[i].center[0];
+                        criaLISTA(Nome, i, c1, c0);
+                }
             }
         }
             request.send();
         }
     
-        function formaLista(){
-            var info= abreLink();
-            for(let i = 0; i<5; i++){
-                var Nome = info.features[i].place_name;
-                var c1 = info.features[i].center[1];
-                var c0 =  info.features[i].center[0];
-                criaLISTA(Nome, i, c1, c0);
-            }
-        }
-
         function criaDIV(){
 
             var novo_div1 = document.createElement('div');
@@ -78,7 +104,6 @@
             document.getElementById('main').appendChild(novo_div1);
             document.getElementById('novo_div1').appendChild(novo_div2);
         }
-
 
         function criaLISTA(nome_do_item, id, c1, c0){
 
@@ -98,6 +123,7 @@
             document.getElementById('novo_div2').appendChild(nova_li);
             
         }
+
 
         function mapa(c1, c0){
 
@@ -123,6 +149,7 @@
 
         function principal(){
 
+  
             criaDIV();
             abreLink();
         }
